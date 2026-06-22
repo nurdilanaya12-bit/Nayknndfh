@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Horror Mabar HP</title>
+    <style>
+        body { margin: 0; background: #000; color: white; overflow: hidden; }
+        canvas { display: block; }
+        #ui { position: absolute; top: 10px; left: 10px; font-family: sans-serif; pointer-events: none;}
+    </style>
+</head>
+<body>
+    <div id="ui">Pemain 1 & 2: Cari Kunci!</div>
+    <canvas id="gameCanvas"></canvas>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Resize canvas
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // State Game Sederhana (Ini harusnya disinkronisasi server/WebRTC)
+    let p1 = { x: 50, y: 50, color: 'white', size: 15 };
+    let p2 = { x: 100, y: 50, color: 'blue', size: 15 };
+    let ghost = { x: 500, y: 300, size: 20 };
+
+    function draw() {
+        // Bersihkan layar (gelap)
+        ctx.fillStyle = '#050505';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Efek Flashlight (Radius cahaya)
+        let gradient = ctx.createRadialGradient(p1.x, p1.y, 10, p1.x, p1.y, 150);
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0.95)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Gambar Pemain
+        ctx.fillStyle = p1.color;
+        ctx.fillRect(p1.x, p1.y, p1.size, p1.size);
+        ctx.fillStyle = p2.color;
+        ctx.fillRect(p2.x, p2.y, p2.size, p2.size);
+
+        // Gambar Hantu
+        ctx.fillStyle = 'red';
+        ctx.fillRect(ghost.x, ghost.y, ghost.size, ghost.size);
+
+        requestAnimationFrame(draw);
+    }
+
+    // Kontrol pergerakan
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowUp') p1.y -= 10;
+        if (e.key === 'ArrowDown') p1.y += 10;
+        if (e.key === 'ArrowLeft') p1.x -= 10;
+        if (e.key === 'ArrowRight') p1.x += 10;
+    });
+
+    draw();
+</script>
+</body>
+</html>
